@@ -39,14 +39,14 @@ export async function generateImage(prompt: string, size: string) {
     } as any);
 
     if (!response?.data?.[0]?.b64_json) {
-      throw new Error('Failed to generate image: Invalid API response');
+      return { imageUrl: null };
     }
     
     return { imageUrl: response.data[0].b64_json };
   } catch (error) {
-    console.error('Error generating image:', error);
+    // console.error('Error generating image:', error);
     // Return a user-friendly error message in production
-    throw new Error('Failed to generate image. Please try again later.');
+    return { imageUrl: null };
   }
 }
 

@@ -8,8 +8,7 @@ const inter = Inter({ subsets: ["latin"] })
 
 export const metadata: Metadata = {
   title: "AI Image Generator",
-  description: "Generate images using OpenAI DALL-E",
-    generator: 'v0.dev'
+  description: "Generate images using Nebius",
 }
 
 export default function RootLayout({
