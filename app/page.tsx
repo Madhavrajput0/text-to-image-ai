@@ -34,13 +34,13 @@ export default function ImageGenerator() {
 
     try {
       const result = await generateImage(prompt, size)
-      console.log('API Response:', result);
+      // console.log('API Response:', result);
       if (!result?.imageUrl) {
         throw new Error('No image data received');
       }
       setImageUrl(`data:image/webp;base64,${result.imageUrl}`);
     } catch (err) {
-      console.error('Error:', err);
+      // console.error('Error:', err);
       setError(err instanceof Error ? err.message : "Failed to generate image")
     } finally {
       setLoading(false)
@@ -48,6 +48,7 @@ export default function ImageGenerator() {
   }
 
   return (
+    <>
     <div className="container max-w-4xl mx-auto py-10 px-4">
       <h1 className="text-3xl font-bold text-center mb-8">AI Image Generator</h1>
 
@@ -126,6 +127,7 @@ export default function ImageGenerator() {
         </div>
       )}
     </div>
+    </>
   )
 }
 

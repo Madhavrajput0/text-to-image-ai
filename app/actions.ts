@@ -2,7 +2,7 @@
 
 import OpenAI from 'openai';
 
-const apiKey = process.env.NEBIUS_API_KEY;
+const apiKey:string | undefined = process.env.NEBIUS_API_KEY || "";
 
 if (!apiKey) {
   throw new Error('NEBIUS_API_KEY is not defined in environment variables');
