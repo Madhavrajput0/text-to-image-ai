@@ -36,8 +36,11 @@ export default function ImageGenerator() {
       const result = await generateImage(prompt, size)
       // console.log('API Response:', result);
       if (!result?.imageUrl) {
-        throw new Error('No image data received');
+       return setError('No image data received');
       }
+      console.log(result.imageUrl);
+      console.log("hello");
+      console.log(result);
       setImageUrl(`data:image/webp;base64,${result.imageUrl}`);
     } catch (err) {
       // console.error('Error:', err);
