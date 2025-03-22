@@ -1,6 +1,8 @@
 "use server"
 
 import OpenAI from 'openai';
+import { rateLimiter } from './utils/rateLimiter';
+import { headers } from 'next/headers';
 
 const apiKey = process.env.NEBIUS_API_KEY;
 
@@ -18,10 +20,26 @@ type ImageResponse = {
   imageUrl: string | null;
   message?: string;
   statusCode?: number;
+  remaining?: number;
 };
 
 export async function generateImage(prompt: string, size: string = "1024x1024"): Promise<ImageResponse> {
-  // Return error instead of throwing
+  // Get user's IP address
+  const headersList = await headers();
+  const ip = headersList.get('x-forwarded-for') || 'unknown';
+
+  // Check rate limit
+  const { limited, remaining } = rateLimiter.isRateLimited(ip);
+  
+  if (limited) {
+    return {
+      imageUrl: null,
+      message: 'You have reached the maximum number of image generations (3 per 24 hours). Please try again later.',
+      statusCode: 429,
+      remaining: 0
+    };
+  }
+
   if (!apiKey) {
     return { 
       imageUrl: null, 
@@ -63,7 +81,10 @@ export async function generateImage(prompt: string, size: string = "1024x1024"):
       };
     }
     
-    return { imageUrl: response.data[0].b64_json };
+    return { 
+      imageUrl: response.data[0].b64_json,
+      remaining
+    };
   } catch (error: any) {
     console.error('Error generating image:', error);
     if (error.status === 401) {

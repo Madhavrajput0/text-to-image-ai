@@ -21,6 +21,7 @@ export default function ImageGenerator() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [size, setSize] = useState("1024x1024")
+  const [remaining, setRemaining] = useState<number | null>(null)
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -39,6 +40,7 @@ export default function ImageGenerator() {
         throw new Error(result?.message || 'Failed to generate image');
       }
       setImageUrl(`data:image/webp;base64,${result.imageUrl}`);
+      setRemaining(result.remaining || null);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to generate image")
     } finally {
@@ -54,6 +56,11 @@ export default function ImageGenerator() {
         <Card className="mb-8">
           <CardContent className="pt-6">
             <form onSubmit={handleSubmit} className="space-y-4">
+              {remaining !== null && (
+                <div className="text-sm text-muted-foreground text-center">
+                  Remaining generations: {remaining}/3
+                </div>
+              )}
               <div className="space-y-2">
                 <Label htmlFor="prompt">Describe the image you want to generate</Label>
                 <Input
